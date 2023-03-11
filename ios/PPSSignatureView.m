@@ -152,7 +152,7 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 		
 		time(NULL);
 		
-		self.backgroundColor = [UIColor transparentColor];
+		self.backgroundColor = [UIColor clearColor];
 		self.opaque = NO;
 		
 		self.context = context;
