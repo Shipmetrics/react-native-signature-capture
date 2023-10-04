@@ -30,6 +30,7 @@ import java.io.OutputStream;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 public class RSSignatureCaptureMainView extends LinearLayout implements OnClickListener, RSSignatureCaptureView.SignatureCallback {
   private LinearLayout buttonsLayout;
@@ -145,14 +146,20 @@ public class RSSignatureCaptureMainView extends LinearLayout implements OnClickL
   private File createNewFile() {
     Format formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss.SSS");
     String s = formatter.format(new Date());
-    String filename = "image-" + s + ".png";
-    String dir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.shipmetrics/";
-    File path = new File(dir);
+    String filename = "signature-image-" + s + UUID.randomUUID().toString() + ".png";
+    File path = new File(mReactContext.getFilesDir().getAbsolutePath() + "/1stlog/");
+
+    if (!path.exists()) {
+      if (!path.mkdirs()) {
+          path = mReactContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+      }
+    }
     File f = new File(path, filename);
     try {
       path.mkdirs();
       f.createNewFile();
     } catch (IOException e) {
+      Log.d("React Signature", "Exception: " + e);
       e.printStackTrace();
     }
 
@@ -163,7 +170,7 @@ public class RSSignatureCaptureMainView extends LinearLayout implements OnClickL
    * save the signature to an sd card directory
    */
   final void saveImage() {
-    if (permissionsCheck()) {
+    // if (permissionsCheck()) {
       File outputFile = createNewFile();
       OutputStream fout;
       try {
@@ -184,14 +191,14 @@ public class RSSignatureCaptureMainView extends LinearLayout implements OnClickL
         event.putString("pathName", "file://" + outputFile.getAbsolutePath());
         mReactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "topChange", event);
       } catch (IOException e) {
+        Log.d("React Signature", "Exception 2: " + e);
         e.printStackTrace();
       }
-    }
+    // }
   }
 
 
   public Bitmap getResizedBitmap(Bitmap image) {
-    Log.d("React Signature", "maxSize:" + maxSize);
     int width = image.getWidth();
     int height = image.getHeight();
 
