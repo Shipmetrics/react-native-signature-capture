@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import ReactNative, {
   requireNativeComponent,
   View,
-  ViewPropTypes,
   UIManager,
   DeviceEventEmitter
 } from 'react-native';
+
+import { ViewPropTypes } from 'deprecated-react-native-prop-types';
 
 class SignatureCapture extends Component {
 
