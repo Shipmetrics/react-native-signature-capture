@@ -1,33 +1,44 @@
 {
   "name": "react-native-signature-capture",
-  "version": "0.4.2",
+  "version": "1.0.0",
   "description": "Lets users sign their signatures",
-  "main": "SignatureCapture.js",
+  "main": "src/index.tsx",
+  "react-native": "src/index.tsx",
+  "types": "src/index.tsx",
+  "files": [
+    "src",
+    "android",
+    "ios",
+    "react-native-signature-capture.podspec",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/RepairShopr/react-native-signature-capture.git"
+    "url": "git+https://github.com/Shipmetrics/react-native-signature-capture.git"
   },
   "keywords": [
     "react-component",
     "react-native",
     "ios",
+    "android",
     "signature"
   ],
-  "devDependencies": {
-    "eslint": "^3.5.0",
-    "eslint-plugin-react": "^6.3.0",
-    "eslint-plugin-react-native": "^2.0.0"
-  },
   "peerDependencies": {
+    "react": "*",
     "react-native": ">=0.29"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^5.4.0"
   },
   "author": "RepairShopr",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/RepairShopr/react-native-signature-capture/issues"
+    "url": "https://github.com/Shipmetrics/react-native-signature-capture/issues"
   },
-  "homepage": "https://github.com/RepairShopr/react-native-signature-capture#readme"
+  "homepage": "https://github.com/Shipmetrics/react-native-signature-capture#readme"
 }
