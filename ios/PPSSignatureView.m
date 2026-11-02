@@ -239,31 +239,6 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 	[self setNeedsDisplay];
 }
 
-- (UIImage*)imageByCombiningImage:(UIImage*)firstImage withImage:(UIImage*)secondImage {
-	UIImage *image = nil;
-	
-	CGSize newImageSize = CGSizeMake(MAX(firstImage.size.width, secondImage.size.width), MAX(firstImage.size.height, secondImage.size.height));
-	if (UIGraphicsBeginImageContextWithOptions != NULL) {
-		UIGraphicsBeginImageContextWithOptions(newImageSize, NO, [[UIScreen mainScreen] scale]);
-	} else {
-		UIGraphicsBeginImageContext(newImageSize);
-	}
-	[firstImage drawAtPoint:CGPointMake(roundf((newImageSize.width-firstImage.size.width)/2),
-																			roundf((newImageSize.height-firstImage.size.height)/2))];
-	[secondImage drawAtPoint:CGPointMake(roundf((newImageSize.width-secondImage.size.width)/2),
-																			 roundf((newImageSize.height-secondImage.size.height)/2))];
-	image = UIGraphicsGetImageFromCurrentImageContext();
-	UIGraphicsEndImageContext();
-	
-	return image;
-}
-
--(UIImage *) snapshot
-{
-	UIImage *result = [super snapshot];
-	return result;
-}
-
 - (UIImage*)rotateImage:(UIImage*)sourceImage clockwise:(BOOL)clockwise
 {
 	CGSize size = sourceImage.size;
