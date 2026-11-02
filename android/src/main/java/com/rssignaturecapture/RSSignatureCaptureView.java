@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
@@ -23,11 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RSSignatureCaptureView extends View {
-  private static final float STROKE_WIDTH = 5f;
-  private static final float HALF_STROKE_WIDTH = STROKE_WIDTH / 2;
-
-  private boolean mIsEmpty;
-  private OnSignedListener mOnSignedListener;
   private int mMinWidth;
   private int mMaxWidth;
   private float mLastTouchX;
@@ -38,7 +32,6 @@ public class RSSignatureCaptureView extends View {
 
   private List<TimedPoint> mPoints;
   private Paint mPaint = new Paint();
-  private Path mPath = new Path();
   private Bitmap mSignatureBitmap = null;
   // The strokes are always drawn black into mSignatureBitmap (what getSignature
   // exports). Only the on-screen copy is tinted, by mDisplayPaint's filter, so
@@ -250,7 +243,6 @@ public class RSSignatureCaptureView extends View {
       case MotionEvent.ACTION_DOWN:
         getParent().requestDisallowInterceptTouchEvent(true);
         mPoints.clear();
-        mPath.moveTo(eventX, eventY);
         mLastTouchX = eventX;
         mLastTouchY = eventY;
         addPoint(new TimedPoint(eventX, eventY));
@@ -267,7 +259,6 @@ public class RSSignatureCaptureView extends View {
         resetDirtyRect(eventX, eventY);
         addPoint(new TimedPoint(eventX, eventY));
         getParent().requestDisallowInterceptTouchEvent(true);
-        setIsEmpty(false);
         sendDragEventToReact();
         break;
 
@@ -336,41 +327,21 @@ public class RSSignatureCaptureView extends View {
   }
 
 
-  private void setIsEmpty(boolean newValue) {
-    mIsEmpty = newValue;
-    if (mOnSignedListener != null) {
-      if (mIsEmpty) {
-        mOnSignedListener.onClear();
-      } else {
-        mOnSignedListener.onSigned();
-      }
-    }
-  }
-
   public void clear() {
     dragged = false;
     mPoints = new ArrayList<TimedPoint>();
     mLastVelocity = 0;
     mLastWidth = (mMinWidth + mMaxWidth) / 2;
-    mPath.reset();
 
     if (mSignatureBitmap != null) {
       mSignatureBitmap = null;
       ensureSignatureBitmap();
     }
 
-    setIsEmpty(true);
-
     invalidate();
   }
 
   private int convertDpToPx(float dp) {
     return Math.round(dp * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
-  }
-
-  public interface OnSignedListener {
-    public void onSigned();
-
-    public void onClear();
   }
 }

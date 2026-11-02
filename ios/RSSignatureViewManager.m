@@ -2,11 +2,11 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTBridge.h>
 #import <React/RCTEventDispatcher.h>
+#import <React/RCTUIManager.h>
 
 @implementation RSSignatureViewManager
 
 @synthesize bridge = _bridge;
-@synthesize signView;
 
 RCT_EXPORT_MODULE()
 
@@ -23,23 +23,30 @@ RCT_EXPORT_VIEW_PROPERTY(strokeColor, UIColor)
 
 -(UIView *) view
 {
-	self.signView = [[RSSignatureView alloc] init];
-	self.signView.manager = self;
+	RSSignatureView *signView = [[RSSignatureView alloc] init];
+	signView.manager = self;
 	return signView;
 }
 
-// Both of these methods needs to be called from the main thread so the
-// UI can clear out the signature.
+// Resolve the view by its tag: several signature views can exist at once.
+// viewRegistry also resolves Fabric views (RCTComposedViewRegistry falls back
+// to viewForReactTag:), so this works under the legacy-view interop layer.
 RCT_EXPORT_METHOD(saveImage:(nonnull NSNumber *)reactTag) {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		[self.signView saveImage];
-	});
+	[self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+		RSSignatureView *view = (RSSignatureView *)viewRegistry[reactTag];
+		if ([view isKindOfClass:[RSSignatureView class]]) {
+			[view saveImage];
+		}
+	}];
 }
 
 RCT_EXPORT_METHOD(resetImage:(nonnull NSNumber *)reactTag) {
-	dispatch_async(dispatch_get_main_queue(), ^{
-		[self.signView erase];
-	});
+	[self.bridge.uiManager addUIBlock:^(RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry) {
+		RSSignatureView *view = (RSSignatureView *)viewRegistry[reactTag];
+		if ([view isKindOfClass:[RSSignatureView class]]) {
+			[view erase];
+		}
+	}];
 }
 
 -(void) publishSaveImageEvent:(NSString *) aTempPath {

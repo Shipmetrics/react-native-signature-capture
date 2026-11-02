@@ -200,10 +200,6 @@ NSString *tempPath = [documentsDirectory stringByAppendingFormat:[NSString strin
 	NSData *imageData = UIImagePNGRepresentation(signImage);
 	BOOL isSuccess = [imageData writeToFile:tempPath atomically:YES];
 	if (isSuccess) {
-		NSFileManager *man = [NSFileManager defaultManager];
-		NSDictionary *attrs = [man attributesOfItemAtPath:tempPath error: NULL];
-		//UInt32 result = [attrs fileSize];
-		
 		[self.manager publishSaveImageEvent: tempPath];
 	}
 }

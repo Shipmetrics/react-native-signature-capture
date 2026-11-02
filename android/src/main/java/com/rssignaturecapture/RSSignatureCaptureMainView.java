@@ -1,14 +1,10 @@
 package com.rssignaturecapture;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Environment;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -129,17 +125,6 @@ public class RSSignatureCaptureMainView extends LinearLayout implements OnClickL
     }
   }
 
-  private boolean permissionsCheck() {
-    int writePermission = ContextCompat.checkSelfPermission(mReactContext, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-    if (writePermission != PackageManager.PERMISSION_GRANTED) {
-      String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-      ActivityCompat.requestPermissions(mActivity, permissions, 1);
-      return false;
-
-    }
-    return true;
-  }
-
   private File createNewFile() {
     Format formatter = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss.SSS");
     String s = formatter.format(new Date());
@@ -167,24 +152,22 @@ public class RSSignatureCaptureMainView extends LinearLayout implements OnClickL
    * save the signature to an sd card directory
    */
   final void saveImage() {
-    // if (permissionsCheck()) {
-      File outputFile = createNewFile();
-      OutputStream fout;
-      try {
+    File outputFile = createNewFile();
+    OutputStream fout;
+    try {
 
-        fout = new FileOutputStream(outputFile);
-        this.signatureView.getSignature().compress(Bitmap.CompressFormat.PNG, 90, fout);
-        fout.flush();
-        fout.close();
+      fout = new FileOutputStream(outputFile);
+      this.signatureView.getSignature().compress(Bitmap.CompressFormat.PNG, 90, fout);
+      fout.flush();
+      fout.close();
 
-        WritableMap event = Arguments.createMap();
-        event.putString("pathName", "file://" + outputFile.getAbsolutePath());
-        mReactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "topChange", event);
-      } catch (IOException e) {
-        Log.d("React Signature", "Exception 2: " + e);
-        e.printStackTrace();
-      }
-    // }
+      WritableMap event = Arguments.createMap();
+      event.putString("pathName", "file://" + outputFile.getAbsolutePath());
+      mReactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "topChange", event);
+    } catch (IOException e) {
+      Log.d("React Signature", "Exception 2: " + e);
+      e.printStackTrace();
+    }
   }
 
 
