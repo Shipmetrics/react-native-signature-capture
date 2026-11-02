@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.os.Environment;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,7 +21,6 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,7 +39,6 @@ public class RSSignatureCaptureMainView extends LinearLayout implements OnClickL
   private Boolean saveFileInExtStorage = false;
   private String viewMode = "portrait";
   private Boolean showNativeButtons = true;
-  private int maxSize = 500;
   private ReactContext mReactContext;
 
   public RSSignatureCaptureMainView(ReactContext context, Activity activity) {
@@ -84,8 +81,8 @@ public class RSSignatureCaptureMainView extends LinearLayout implements OnClickL
     }
   }
 
-  public void setMaxSize(int size) {
-    this.maxSize = size;
+  public void setStrokeColor(int color) {
+    signatureView.setInkColor(color);
   }
 
 
@@ -180,13 +177,6 @@ public class RSSignatureCaptureMainView extends LinearLayout implements OnClickL
         fout.flush();
         fout.close();
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        Bitmap resizedBitmap = getResizedBitmap(this.signatureView.getSignature());
-        resizedBitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        String encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
-
         WritableMap event = Arguments.createMap();
         event.putString("pathName", "file://" + outputFile.getAbsolutePath());
         mReactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(), "topChange", event);
@@ -195,23 +185,6 @@ public class RSSignatureCaptureMainView extends LinearLayout implements OnClickL
         e.printStackTrace();
       }
     // }
-  }
-
-
-  public Bitmap getResizedBitmap(Bitmap image) {
-    int width = image.getWidth();
-    int height = image.getHeight();
-
-    float bitmapRatio = (float) width / (float) height;
-    if (bitmapRatio > 1) {
-      width = maxSize;
-      height = (int) (width / bitmapRatio);
-    } else {
-      height = maxSize;
-      width = (int) (height * bitmapRatio);
-    }
-
-    return Bitmap.createScaledBitmap(image, width, height, true);
   }
 
 

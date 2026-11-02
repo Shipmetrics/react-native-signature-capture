@@ -61,6 +61,7 @@
 						initWithFrame: CGRectMake(0, 0, screen.width, screen.height)
 						context: _context];
 		sign.manager = manager;
+		sign.strokeColor = _strokeColor;
 		
 		[self addSubview:sign];
 		
@@ -155,6 +156,12 @@
 	_rotateClockwise = rotateClockwise;
 }
 
+- (void)setStrokeColor:(UIColor *)strokeColor {
+	_strokeColor = strokeColor;
+	// `sign` only exists after the first layout; layoutSubviews passes it on.
+	sign.strokeColor = strokeColor;
+}
+
 - (void)setSquare:(BOOL)square {
 	_square = square;
 }
@@ -197,8 +204,7 @@ NSString *tempPath = [documentsDirectory stringByAppendingFormat:[NSString strin
 		NSDictionary *attrs = [man attributesOfItemAtPath:tempPath error: NULL];
 		//UInt32 result = [attrs fileSize];
 		
-		NSString *base64Encoded = [imageData base64EncodedStringWithOptions:0];
-		[self.manager publishSaveImageEvent: tempPath withEncoded:base64Encoded];
+		[self.manager publishSaveImageEvent: tempPath];
 	}
 }
 

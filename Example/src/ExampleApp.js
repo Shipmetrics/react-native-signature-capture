@@ -57,7 +57,7 @@ class ExampleApp extends Component {
   }
 
   _onSave(result) {
-    const base64String = `data:image/png;base64,${result.encoded}`;
+    const base64String = result.pathName;
     this.setState({data: base64String});
 
     this._signatureView.show(false);

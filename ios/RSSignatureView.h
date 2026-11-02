@@ -9,6 +9,7 @@
 @property (nonatomic, strong) PPSSignatureView *sign;
 @property (nonatomic, strong) RSSignatureViewManager *manager;
 @property (nonatomic, assign) BOOL showNativeButtons;
+@property (nonatomic, strong) UIColor *strokeColor;
 -(void) onSaveButtonPressed;
 -(void) onClearButtonPressed;
 -(void) saveImage;
