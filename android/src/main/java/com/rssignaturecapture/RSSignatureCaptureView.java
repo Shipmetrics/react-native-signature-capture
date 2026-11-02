@@ -6,6 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.RectF;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -38,6 +40,12 @@ public class RSSignatureCaptureView extends View {
   private Paint mPaint = new Paint();
   private Path mPath = new Path();
   private Bitmap mSignatureBitmap = null;
+  // The strokes are always drawn black into mSignatureBitmap (what getSignature
+  // exports). Only the on-screen copy is tinted, by mDisplayPaint's filter, so
+  // a change of ink colour recolours the whole visible signature and never
+  // touches the exported image.
+  private final Paint mDisplayPaint = new Paint();
+  private boolean mExporting = false;
 
   private float mVelocityFilterWeight;
   private Canvas mSignatureBitmapCanvas = null;
@@ -91,13 +99,27 @@ public class RSSignatureCaptureView extends View {
       signatureBitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_4444);
     }
 
-    // important for saving signature
+    // important for saving signature; the export is never tinted
     final Canvas canvas = new Canvas(signatureBitmap);
-    this.draw(canvas);
+    mExporting = true;
+    try {
+      this.draw(canvas);
+    } finally {
+      mExporting = false;
+    }
 
     return signatureBitmap;
   }
 
+
+  /**
+   * Colour of the strokes on screen. The exported image stays black.
+   */
+  public void setInkColor(int color) {
+    mDisplayPaint.setColorFilter(color == Color.BLACK ? null
+        : new PorterDuffColorFilter(color, PorterDuff.Mode.SRC_IN));
+    invalidate();
+  }
 
   /**
    * clear signature canvas
@@ -273,7 +295,7 @@ public class RSSignatureCaptureView extends View {
   @Override
   protected void onDraw(Canvas canvas) {
     if (mSignatureBitmap != null) {
-      canvas.drawBitmap(mSignatureBitmap, 0, 0, mPaint);
+      canvas.drawBitmap(mSignatureBitmap, 0, 0, mExporting ? null : mDisplayPaint);
     }
   }
 

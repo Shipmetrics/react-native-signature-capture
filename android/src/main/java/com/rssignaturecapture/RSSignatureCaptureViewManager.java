@@ -1,5 +1,6 @@
 package com.rssignaturecapture;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import com.facebook.infer.annotation.Assertions;
@@ -19,7 +20,7 @@ public class RSSignatureCaptureViewManager extends ViewGroupManager<RSSignatureC
   public static final String PROPS_SAVE_IMAGE_FILE = "saveImageFileInExtStorage";
   public static final String PROPS_VIEW_MODE = "viewMode";
   public static final String PROPS_SHOW_NATIVE_BUTTONS = "showNativeButtons";
-  public static final String PROPS_MAX_SIZE = "maxSize";
+  public static final String PROPS_STROKE_COLOR = "strokeColor";
 
   public static final int COMMAND_SAVE_IMAGE = 1;
   public static final int COMMAND_RESET_IMAGE = 2;
@@ -61,14 +62,12 @@ public class RSSignatureCaptureViewManager extends ViewGroupManager<RSSignatureC
   }
 
 
-  @ReactProp(name = PROPS_MAX_SIZE)
-  public void setPropsWidth(RSSignatureCaptureMainView view, @Nullable Integer maxSize) {
-    Log.d("maxSize:", "" + maxSize);
+  @ReactProp(name = PROPS_STROKE_COLOR, customType = "Color", defaultInt = Color.BLACK)
+  public void setStrokeColor(RSSignatureCaptureMainView view, int color) {
     if (view != null) {
-      view.setMaxSize(maxSize);
+      view.setStrokeColor(color);
     }
   }
-
 
   @Override
   public RSSignatureCaptureMainView createViewInstance(ThemedReactContext context) {

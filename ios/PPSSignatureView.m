@@ -320,7 +320,12 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 		return nil;
 	
 	UIImage *signatureImg;
+	// The export is always black, whatever the on-screen ink: snapshot redraws
+	// the view with the effect's current colour, then the ink is restored.
+	UIColor *ink = self.strokeColor;
+	self.strokeColor = nil;
 	UIImage *snapshot = [self snapshot];
+	self.strokeColor = ink;
 	
 	if ( UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad ) {
 		//signature
@@ -509,6 +514,9 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 - (void)setStrokeColor:(UIColor *)strokeColor {
 	_strokeColor = strokeColor;
 	[self updateStrokeColor];
+	// constantColor tints every stroke when it is drawn, so the existing
+	// signature changes colour with the next redraw.
+	[self setNeedsDisplay];
 }
 
 

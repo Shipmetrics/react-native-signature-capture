@@ -21,8 +21,6 @@ const VIEW_NAME = 'RSSignatureView'
 export interface SaveEventParams {
   /** `file://` path of the rendered signature image. */
   pathName: string
-  /** Base64-encoded PNG. Currently only populated on some platforms. */
-  encoded?: string
 }
 
 /** Payload delivered the first time the user draws on the canvas. */
@@ -45,11 +43,9 @@ export interface SignatureCaptureProps extends ViewProps {
   viewMode?: 'portrait' | 'landscape'
   /** Render the native "Save"/"Reset" buttons. */
   showNativeButtons?: boolean
-  /** Android only. Max edge length of the saved image (aspect ratio kept). Default 500. */
-  maxSize?: number
   /**
-   * Currently a no-op on both native platforms; accepted for forward
-   * compatibility and to keep call sites that set a pen color type-safe.
+   * Colour of the strokes ON SCREEN, existing strokes included. The saved
+   * image is always black strokes on a transparent background.
    */
   strokeColor?: string
 }
@@ -64,7 +60,6 @@ export interface SignatureCaptureRef {
 
 interface NativeChangeEvent {
   pathName?: string
-  encoded?: string
   dragged?: boolean
 }
 
@@ -121,9 +116,9 @@ const SignatureCapture = forwardRef<SignatureCaptureRef, SignatureCaptureProps>(
     // Android delivers events through the native view's `onChange`.
     const handleChange = useCallback(
       (event: NativeSyntheticEvent<NativeChangeEvent>) => {
-        const { pathName, encoded, dragged } = event.nativeEvent
+        const { pathName, dragged } = event.nativeEvent
         if (pathName) {
-          onSaveEvent?.({ pathName, encoded })
+          onSaveEvent?.({ pathName })
         }
         if (dragged) {
           onDragEvent?.({ dragged })

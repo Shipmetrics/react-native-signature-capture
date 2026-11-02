@@ -71,7 +71,6 @@ class SignatureView extends Component {
   }
 
   _onSaveEvent(result) {
-    //result.encoded - for the base64 encoded png
     //result.pathName - for the file path name
     this.props.onSave && this.props.onSave(result);
   }

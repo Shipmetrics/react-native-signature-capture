@@ -3,7 +3,7 @@
 ## About this
 React Native library for capturing signature
 
-User would sign on the app and when you press the save button it returns the base64 encoded png
+User would sign on the app and when you press the save button it returns the path of the saved png
 
 ### iOS
 <img src="http://i.giphy.com/3oEduIyWb48Ws3bSuc.gif" />
@@ -109,16 +109,16 @@ class CustomComponent extends Component {
 
 + **viewMode** : "portrait" or "landscape" change the screen orientation based on boolean value
 
-+ **maxSize**  : sets the max size of the image maintains aspect ratio, default is 500
++ **strokeColor** : colour of the strokes ON SCREEN (existing strokes included). The saved image always has black strokes on a transparent background.
 
 ### Methods
 
-+ **saveImage()** : when called it will save the image and returns the base 64 encoded string on onSaveEvent() callback
++ **saveImage()** : when called it will save the image and returns the file path on onSaveEvent() callback
 
 + **resetSign()** : when called it will clear the image on the canvas
 
 ### Callback Props
-+ **onSaveEvent** : Triggered when saveImage() is called, which return Base64 Encoded String and image file path.
++ **onSaveEvent** : Triggered when saveImage() is called, which returns the image file path (`pathName`).
 
 + **onDragEvent** : Triggered when user marks his signature on the canvas. This will not be called when the user does not perform any action on canvas.
 
@@ -185,7 +185,6 @@ class RNSignatureExample extends Component {
     }
 
     _onSaveEvent(result) {
-        //result.encoded - for the base64 encoded png
         //result.pathName - for the file path name
         console.log(result);
     }

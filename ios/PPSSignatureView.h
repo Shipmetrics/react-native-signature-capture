@@ -5,7 +5,8 @@
 
 @interface PPSSignatureView : GLKView
 
-@property (assign, nonatomic) UIColor *strokeColor;
+// On-screen ink colour. The exported image (signatureImage) is always black.
+@property (strong, nonatomic) UIColor *strokeColor;
 @property (assign, nonatomic) BOOL hasSignature;
 @property (strong, nonatomic) UIImage *signatureImage;
 @property (nonatomic, strong) RSSignatureViewManager *manager;

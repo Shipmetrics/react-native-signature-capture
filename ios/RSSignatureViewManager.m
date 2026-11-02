@@ -13,6 +13,7 @@ RCT_EXPORT_MODULE()
 RCT_EXPORT_VIEW_PROPERTY(rotateClockwise, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(square, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(showNativeButtons, BOOL)
+RCT_EXPORT_VIEW_PROPERTY(strokeColor, UIColor)
 
 
 -(dispatch_queue_t) methodQueue
@@ -41,7 +42,7 @@ RCT_EXPORT_METHOD(resetImage:(nonnull NSNumber *)reactTag) {
 	});
 }
 
--(void) publishSaveImageEvent:(NSString *) aTempPath withEncoded: (NSString *) aEncoded {
+-(void) publishSaveImageEvent:(NSString *) aTempPath {
 	[self.bridge.eventDispatcher
 	 sendDeviceEventWithName:@"onSaveEvent"
 	 body:@{
